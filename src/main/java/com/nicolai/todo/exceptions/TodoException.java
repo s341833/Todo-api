@@ -1,11 +1,11 @@
-package com.nicolai.todo.exception;
+package com.nicolai.todo.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class UserException extends RuntimeException {
-    public UserException(String msg) {
-        super(msg);
+public class TodoException extends RuntimeException{
+    public TodoException(String message) {
+        super(message);
     }
 }

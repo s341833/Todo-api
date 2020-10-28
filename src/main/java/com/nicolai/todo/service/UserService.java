@@ -1,7 +1,7 @@
 package com.nicolai.todo.service;
 
 import com.nicolai.todo.domain.User;
-import com.nicolai.todo.exception.UserException;
+import com.nicolai.todo.exceptions.UserException;
 
 public interface UserService {
 

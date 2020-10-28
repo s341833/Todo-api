@@ -1,7 +1,7 @@
 package com.nicolai.todo.service;
 
 import com.nicolai.todo.domain.User;
-import com.nicolai.todo.exception.UserException;
+import com.nicolai.todo.exceptions.UserException;
 import com.nicolai.todo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
