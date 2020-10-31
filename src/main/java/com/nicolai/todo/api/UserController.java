@@ -34,10 +34,4 @@ public class UserController {
         User user = userService.validateUser(username, password);
         return new ResponseEntity<>(user.getUsername(), HttpStatus.OK);
     }
-
-    @PostMapping("/test")
-    ResponseEntity<String> test(@RequestParam Map<String, Object> userMap) {
-        String username = (String) userMap.get("username");
-        return new ResponseEntity<>(username, HttpStatus.OK);
-    }
 }

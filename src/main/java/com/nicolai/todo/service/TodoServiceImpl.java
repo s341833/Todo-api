@@ -26,4 +26,9 @@ public class TodoServiceImpl implements TodoService{
     public int addTodo(String username, String todo, Date date, boolean done) throws TodoException {
         return todoRepository.addTodo(username, todo, date, done);
     }
+
+    @Override
+    public String updateTodo(int id, boolean done) throws TodoException {
+        return todoRepository.updateTodo(id, done);
+    }
 }

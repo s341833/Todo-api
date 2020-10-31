@@ -13,4 +13,6 @@ public interface TodoService {
 
     int addTodo(String username, String todo, Date date, boolean done) throws TodoException;
 
+    String updateTodo(int id, boolean done) throws TodoException;
+
 }

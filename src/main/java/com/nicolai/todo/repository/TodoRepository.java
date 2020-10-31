@@ -11,4 +11,6 @@ public interface TodoRepository {
     List<Todo> getTodos(String username);
 
     int addTodo(String username, String todo, Date date, boolean done) throws TodoException;
+
+    String updateTodo(int id, boolean done) throws TodoException;
 }

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -28,16 +28,24 @@ public class TodoController {
     ResponseEntity<Integer> postTodo(@RequestParam Map<String, Object> todoMap) throws ParseException {
         String username = (String) todoMap.get("username");
         String todo = (String) todoMap.get("todo");
-        Date date = new Date(System.currentTimeMillis());
-        boolean done = Boolean.parseBoolean((String) todoMap.get("done"));
-
-        int ret = todoService.addTodo(username, todo, date, done);
+        String dateString = (String) todoMap.get("date");
+        Date date = new Date(new SimpleDateFormat("yyyy-M-dd").parse(dateString).getTime());
+        int ret = todoService.addTodo(username, todo, date, false);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     @PostMapping("/todos")
-    ResponseEntity<List<Todo>> getTodos(@RequestParam String username) {
-        return new ResponseEntity<>(todoService.getTodos(username), HttpStatus.OK);
+    ResponseEntity<List<Todo>> getTodos(@RequestParam Map<String, Object> userMap) {
+        return new ResponseEntity<>(todoService.getTodos((String) userMap.get("username")), HttpStatus.OK);
+    }
+
+    @PostMapping("/updateTodo")
+    ResponseEntity<String> updateTodo(@RequestParam Map<String, Object> todoMap) {
+        int id = Integer.parseInt((String) todoMap.get("id"));
+        boolean done = Boolean.parseBoolean((String) todoMap.get("done"));
+        String ut = todoService.updateTodo(id, done);
+
+        return new ResponseEntity<>(ut, HttpStatus.OK);
     }
 
 }

@@ -25,6 +25,7 @@ public class TodoRepositoryImpl implements TodoRepository{
 
     private static final String SQL_SELECT_TODO = "select id, todo, frist, done, username from todo where username";
     private static final String SQL_INSERT_TODO = "insert into todo(todo, frist, done, username) values(?, ?, ?, ?)";
+    private static final String SQL_UPDATE_TODO = "update todo set done = ? where id = ?";
 
     @Override
     public List<Todo> getTodos(String username) {
@@ -55,6 +56,18 @@ public class TodoRepositoryImpl implements TodoRepository{
             System.out.println(e);
             throw new TodoException("Kunne ikke opprette todo");
         }
+
+    }
+
+    @Override
+    public String updateTodo(int id, boolean done) throws TodoException {
+        try {
+            jdbcTemplate.update(SQL_UPDATE_TODO, done, id);
+            return "done";
+        } catch (Exception e) {
+            throw new TodoException("update failed");
+        }
+
 
     }
 
