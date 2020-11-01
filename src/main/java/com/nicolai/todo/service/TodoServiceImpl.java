@@ -31,4 +31,9 @@ public class TodoServiceImpl implements TodoService{
     public String updateTodo(int id, boolean done) throws TodoException {
         return todoRepository.updateTodo(id, done);
     }
+
+    @Override
+    public String deleteTodo(int id) throws TodoException {
+        return todoRepository.deleteTodo(id);
+    }
 }

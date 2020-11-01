@@ -15,4 +15,6 @@ public interface TodoService {
 
     String updateTodo(int id, boolean done) throws TodoException;
 
+    String deleteTodo(int id) throws TodoException;
+
 }

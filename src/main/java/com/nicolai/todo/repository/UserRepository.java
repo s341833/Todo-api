@@ -8,4 +8,5 @@ public interface UserRepository {
     User create(String username, String password) throws UserException;
 
     User validateUser(String username, String password) throws UserException;
+
 }

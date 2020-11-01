@@ -1,10 +1,13 @@
 let activUser = null;
 
+window.sessionStorage;
+
 let login = "<div class='card w-50'><h5 class='card-header'>Logg inn</h5><div class='card-body'>Skriv inn brukernavn: " +
     "<input placeholder='Brukernavn' class='form-control' id=\"username\"><br>\n" +
     "Skriv inn passord: <input placeholder='Passord' type='password' class='form-control' id=\"password\">\n" +
     "<br><button class='btn btn-outline-primary' onclick=\"loginUser()\">Logg inn</button>" +
-    " <button class='btn btn-outline-secondary' onclick='showRegister()'>Registrer</button> </div></div>"
+    " <button class='btn btn-outline-secondary' onclick='showRegister()'>Registrer</button>" +
+    "<br>Forbli pålogget? <input type='checkbox' id='innlogget'></div></div>"
 
 let register = "<div class='card w-50'><h5 class='card-header'>Registrer ny bruker</h5><div class='card-body'>Skriv inn brukernavn: " +
     "<input placeholder='Brukernavn' class='form-control' id=\"username\"><br>\n" +
@@ -16,7 +19,18 @@ let makeTodoDiv = "<div class='card w-50'><h5 class='card-header'>Lag ny todo</h
     "<input type='date' id='todoDate'><br><br><button onclick='makeTodo()' class='btn btn-outline-primary'>Registrer</button>" +
     " <button onclick='getTodos()' class='btn btn-outline-secondary'>Vis todos</button> </div></div>"
 
+let navbarLogedInn = "<div type='button' class=\"navbar-brand\" onclick=\"showMakeTodo()\">Lag todo</div>" +
+    "<div type='button' class='navbar-brand' onclick='formatTodos(todoList)'>Vis todos</div> " +
+    "<div type='button' class='nav-link' onclick='logOut()'>Logg ut</div>"
+
+let navbarNot = "<div type='button' class='navbar-brand' onclick='showLogin()'>Logg inn</div>" +
+  "<div type='button' class='navbar-brand' onclick='showRegister()'>Registrer</div>"
+
 let todoList = [];
+
+function test() {
+
+}
 
 function showLogin() {
     $("#info").html(login);
@@ -40,12 +54,18 @@ function loginUser() {
         "password" : password
     }
 
-    $("#navbar").html("<div class=\"navbar-brand\" onclick=\"showMakeTodo()\">Lag todo</div>")
+    $("#navIn").html(navbarLogedInn)
 
     $.post("/api/user/login", user, function (data, status) {
         activUser = data
         console.log(activUser);
-        //$("#login").html("");
+
+        if ($("#innlogget").is(":checked") === true) {
+            sessionStorage.setItem("username", activUser);
+        } else {
+            console.log($("innlogget").val())
+        }
+
         getTodos();
     })
     .fail(function (data, status) {
@@ -107,7 +127,8 @@ function formatTodos(todos) {
         "<tr>" +
         "<th scope=\"col\">Todo</th>" +
         "<th scope=\"col\">Done</th>" +
-        "<th scope=\"col\">Date</th></tr>"
+        "<th scope=\"col\">Date</th>" +
+        "<th scope='col'>Delete</th></tr>"
     for (let i = 0; i <todos.length; i++) {
         ut += "<tr><td>"+todos[i].todo+"</td><td><div class='custom-control custom-switch'>"
         let id = todos[i].id;
@@ -115,9 +136,10 @@ function formatTodos(todos) {
         if (todos[i].done === true) {
             ut += "<input onchange='updateTodo("+ id + ", " + done + ")' type='checkbox' checked='checked'>"
         } else {
-            ut += "<input onchange='updateTodo("+ id + ", " + done + ")' type=\"checkbox\" class='custom-control-input'>"
+            ut += "<input onchange='updateTodo("+ id + ", " + done + ")' type=\"checkbox\">"
         }
-        ut += "</div></td><td>"+todos[i].frist+"</td></tr></div>"
+        ut += "</div></td><td>"+todos[i].frist+"</td><td><button onclick='deleteTodo(" + id + ")' class='btn btn-outline-danger'>Slett</button></td>" +
+            "</tr></div>"
     }
     $("#info").html(ut)
 }
@@ -133,4 +155,52 @@ function updateTodo(id, done) {
     .fail( function (data){
         console.log(data)
     })
+}
+
+function deleteTodo(id) {
+    data = {
+        "id":id
+    }
+
+    $.ajax({
+        url: "api/todo/deleteTodo",
+        type: 'DELETE',
+        data: data,
+        success: function (data) {
+            alert(data)
+            getTodos()
+        },
+        fail: function (data, status, xhr) {
+            alert(xhr);
+        }
+    })
+
+    /*
+    $.delete("api/todo/deleteTodo", id, function (data) {
+        alert(data)
+        getTodos()
+    }) .fail (function(data, status, xhr){
+        alert(xhr)
+    })
+
+     */
+}
+
+function logOut() {
+    activUser = null;
+    sessionStorage.clear();
+    showLogin();
+    $("#navIn").html(navbarNot);
+}
+
+function onLoad() {
+    showLogin();
+    activUser = sessionStorage.getItem("username");
+    console.log(activUser);
+    if (activUser !== null) {
+        console.log("in")
+        $("#navIn").html(navbarLogedInn);
+        getTodos();
+    }
+
 }

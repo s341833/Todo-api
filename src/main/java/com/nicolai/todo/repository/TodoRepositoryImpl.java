@@ -26,10 +26,11 @@ public class TodoRepositoryImpl implements TodoRepository{
     private static final String SQL_SELECT_TODO = "select id, todo, frist, done, username from todo where username";
     private static final String SQL_INSERT_TODO = "insert into todo(todo, frist, done, username) values(?, ?, ?, ?)";
     private static final String SQL_UPDATE_TODO = "update todo set done = ? where id = ?";
+    private static final String SQL_DELETE_TODO = "delete from todo where id = ?";
 
     @Override
     public List<Todo> getTodos(String username) {
-        String sql = SQL_SELECT_TODO + " = '" + username + "'";
+        String sql = SQL_SELECT_TODO + " = '" + username + "' order by frist";
         List<Todo> mapList = jdbcTemplate.query(sql, todoRowMapper);
 
         return mapList;
@@ -69,6 +70,12 @@ public class TodoRepositoryImpl implements TodoRepository{
         }
 
 
+    }
+
+    @Override
+    public String deleteTodo(int id) throws TodoException {
+        jdbcTemplate.update(SQL_DELETE_TODO, id);
+        return "deleted";
     }
 
     private RowMapper<Todo> todoRowMapper = ((rs, rowNum) -> {

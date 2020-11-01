@@ -6,10 +6,7 @@ import com.nicolai.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.sql.Date;
@@ -45,6 +42,14 @@ public class TodoController {
         boolean done = Boolean.parseBoolean((String) todoMap.get("done"));
         String ut = todoService.updateTodo(id, done);
 
+        return new ResponseEntity<>(ut, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteTodo")
+    ResponseEntity<String> deleteTodo(@RequestParam Map<String, Object> todoMap) {
+        int id = Integer.parseInt((String) todoMap.get("id"));
+
+        String ut = todoService.deleteTodo(id);
         return new ResponseEntity<>(ut, HttpStatus.OK);
     }
 
