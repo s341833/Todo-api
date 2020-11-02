@@ -36,13 +36,25 @@ public class TodoController {
         return new ResponseEntity<>(todoService.getTodos((String) userMap.get("username")), HttpStatus.OK);
     }
 
-    @PostMapping("/updateTodo")
-    ResponseEntity<String> updateTodo(@RequestParam Map<String, Object> todoMap) {
+    @PostMapping("/updateTodoDone")
+    ResponseEntity<String> updateTodoDone(@RequestParam Map<String, Object> todoMap) {
         int id = Integer.parseInt((String) todoMap.get("id"));
         boolean done = Boolean.parseBoolean((String) todoMap.get("done"));
-        String ut = todoService.updateTodo(id, done);
+        String ut = todoService.updateTodoDone(id, done);
 
         return new ResponseEntity<>(ut, HttpStatus.OK);
+    }
+
+    @PostMapping("/updateTodo")
+    ResponseEntity<String> updateTodo(@RequestParam Map<String, Object> todoMap) throws ParseException {
+        int id = Integer.parseInt((String) todoMap.get("id"));
+        String todo = (String) todoMap.get("todo");
+        String dateString = (String) todoMap.get("frist");
+        Date date = new Date(new SimpleDateFormat("yyyy-M-dd").parse(dateString).getTime());
+        String returnString = todoService.updateTodo(id, todo, date);
+
+
+        return new ResponseEntity<>(returnString, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteTodo")
@@ -52,5 +64,6 @@ public class TodoController {
         String ut = todoService.deleteTodo(id);
         return new ResponseEntity<>(ut, HttpStatus.OK);
     }
+
 
 }

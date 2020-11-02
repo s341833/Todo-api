@@ -25,7 +25,8 @@ public class TodoRepositoryImpl implements TodoRepository{
 
     private static final String SQL_SELECT_TODO = "select id, todo, frist, done, username from todo where username";
     private static final String SQL_INSERT_TODO = "insert into todo(todo, frist, done, username) values(?, ?, ?, ?)";
-    private static final String SQL_UPDATE_TODO = "update todo set done = ? where id = ?";
+    private static final String SQL_UPDATE_TODO_DONE = "update todo set done = ? where id = ?";
+    private static final String SQL_UPDATE_TODO = "update todo set todo = ?, frist = ? where id = ?";
     private static final String SQL_DELETE_TODO = "delete from todo where id = ?";
 
     @Override
@@ -61,9 +62,9 @@ public class TodoRepositoryImpl implements TodoRepository{
     }
 
     @Override
-    public String updateTodo(int id, boolean done) throws TodoException {
+    public String updateTodoDone(int id, boolean done) throws TodoException {
         try {
-            jdbcTemplate.update(SQL_UPDATE_TODO, done, id);
+            jdbcTemplate.update(SQL_UPDATE_TODO_DONE, done, id);
             return "done";
         } catch (Exception e) {
             throw new TodoException("update failed");
@@ -73,10 +74,21 @@ public class TodoRepositoryImpl implements TodoRepository{
     }
 
     @Override
+    public String updateTodo(int id, String todo, Date date) throws TodoException {
+        try {
+            jdbcTemplate.update(SQL_UPDATE_TODO, todo, date, id);
+            return "oppdatert";
+        } catch (Exception e) {
+            throw new TodoException(e.getMessage());
+        }
+    }
+
+    @Override
     public String deleteTodo(int id) throws TodoException {
         jdbcTemplate.update(SQL_DELETE_TODO, id);
         return "deleted";
     }
+
 
     private RowMapper<Todo> todoRowMapper = ((rs, rowNum) -> {
         return new Todo(rs.getInt("id"), rs.getString("todo"),

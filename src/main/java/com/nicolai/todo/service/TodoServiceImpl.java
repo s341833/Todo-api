@@ -28,8 +28,13 @@ public class TodoServiceImpl implements TodoService{
     }
 
     @Override
-    public String updateTodo(int id, boolean done) throws TodoException {
-        return todoRepository.updateTodo(id, done);
+    public String updateTodoDone(int id, boolean done) throws TodoException {
+        return todoRepository.updateTodoDone(id, done);
+    }
+
+    @Override
+    public String updateTodo(int id, String todo, Date done) throws TodoException {
+        return todoRepository.updateTodo(id, todo, done);
     }
 
     @Override

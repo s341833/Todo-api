@@ -13,7 +13,9 @@ public interface TodoService {
 
     int addTodo(String username, String todo, Date date, boolean done) throws TodoException;
 
-    String updateTodo(int id, boolean done) throws TodoException;
+    String updateTodoDone(int id, boolean done) throws TodoException;
+
+    String updateTodo(int id, String todo, Date done) throws TodoException;
 
     String deleteTodo(int id) throws TodoException;
 
