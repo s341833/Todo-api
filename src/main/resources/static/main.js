@@ -10,8 +10,8 @@ let login = "<div class='card w-50'><h5 class='card-header'>Logg inn</h5><div cl
     "<br>Forbli pålogget? <input type='checkbox' id='innlogget'></div></div>"
 
 let register = "<div class='card w-50'><h5 class='card-header'>Registrer ny bruker</h5><div class='card-body'>Skriv inn brukernavn: " +
-    "<input placeholder='Brukernavn' class='form-control' id=\"username\"><br>\n" +
-    "Skriv inn passord: <input placeholder='Passord' type='password' class='form-control' id=\"password\">\n" +
+    "<input placeholder='Brukernavn' class='form-control' id=usernameReg'><br>\n" +
+    "Skriv inn passord: <input placeholder='Passord' type='password' class='form-control' id='passwordReg'>\n" +
     "<br><button class='btn btn-outline-primary' onclick=\"registrerUser()\">Registrer</button>"
 
 let makeTodoDiv = "<div class='card w-50'><h5 class='card-header'>Lag ny todo</h5>" +
@@ -20,13 +20,15 @@ let makeTodoDiv = "<div class='card w-50'><h5 class='card-header'>Lag ny todo</h
     " <button onclick='getTodos()' class='btn btn-outline-secondary'>Vis todos</button> </div></div>"
 
 let navbarLogedInn = "<div type='button' class=\"navbar-brand\" onclick=\"showMakeTodo()\">Lag todo</div>" +
-    "<div type='button' class='navbar-brand' onclick='formatTodos(todoList)'>Vis todos</div> " +
-    "<div type='button' class='nav-link' onclick='logOut()'>Logg ut</div>"
+    "<div type='button' class='navbar-brand' onclick='formatTodos(todoListNye)'>Vis todos</div> " +
+    "<div type='button' class='nav-link' onclick='logOut()'>Logg ut</div>" +
+    "</div> </div>"
 
 let navbarNot = "<div type='button' class='navbar-brand' onclick='showLogin()'>Logg inn</div>" +
   "<div type='button' class='navbar-brand' onclick='showRegister()'>Registrer</div>"
 
 let todoList = [];
+let todoListNye = [];
 
 function test() {
 
@@ -74,13 +76,30 @@ function loginUser() {
 }
 
 function registrerUser() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const username = document.getElementById("usernameReg").value;
+    const password = document.getElementById("passwordReg").value;
 
     let user = {
         "username" : username,
         "password" : password
     }
+    /*
+    $.ajax({
+        url: '/api/user/registrer',
+        type: 'post',
+        data: user,
+        success: function (data) {
+            activUser = data;
+            console.log(activUser);
+            getTodos();
+            $("#info").html(login);
+        },
+        fail: function (data, status, xhr) {
+            alert(data + " " + status + " " + xhr);
+        }
+
+    });
+     */
 
     $.post("/api/user/registrer", user, function (data, status) {
         activUser = data
@@ -92,6 +111,7 @@ function registrerUser() {
     .fail(function (data, status) {
         alert("Registrering feilet\nPrøv på nytt");
     });
+
 }
 
 function getTodos() {
@@ -100,8 +120,14 @@ function getTodos() {
     }
     $.post("/api/todo/todos", userMap, function (todos) {
         todoList = todos;
+        for (let i = 0; i <todoList.length; i++) {
+            if (todoList[i].done === false) {
+                todoListNye.push(todoList[i]);
+            }
+        }
         console.log(todos)
-        formatTodos(todoList)
+        showTodos()
+        //formatTodos(todoList)
     })
 }
 
@@ -122,9 +148,30 @@ function makeTodo() {
     });
 }
 
+function showTodos() {
+    let ut =
+        "<div class='card w-75'>" +
+            "<div class='card-header'>Dine Todos " +
+                "<div class='btn-group'>" +
+                    "<button class='btn btn-outline-warning dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>" +
+                        "Sorter" +
+                    "</button>" +
+                    "<div class='dropdown-menu'>" +
+                        "<div type='button' class='dropdown-item' onclick='formatTodos(todoList)'>Vis alle</div>" +
+                        "<div type='button' class='dropdown-item' onclick='formatTodos(todoListNye)'>Vis ikke fullført</div>" +
+                    "</div>" +
+                "</div>" +
+            "</div>" +
+            "<div class='card-body' id='todos'></div>" +
+        "</div>"
+    $("#info").html(ut);
+    formatTodos(todoListNye);
+
+}
+
 function formatTodos(todos) {
-    let ut = "<div class='card w-75'><div class='card-header'>Dine Todos</div><div class='card-body'><table class=\"table table-borderless table-dark\"> </div>" +
-        "<tr>" +
+    let ut =
+        "<table class=\"table table-borderless table-dark\"> </div><tr>" +
         "<th scope=\"col\">Todo</th>" +
         "<th scope=\"col\">Done</th>" +
         "<th scope=\"col\">Date</th>" +
@@ -141,7 +188,7 @@ function formatTodos(todos) {
         ut += "</div></td><td>"+todos[i].frist+"</td><td><button onclick='deleteTodo(" + id + ")' class='btn btn-outline-danger'>Slett</button></td>" +
             "</tr></div>"
     }
-    $("#info").html(ut)
+    $("#todos").html(ut)
 }
 
 function updateTodo(id, done) {
