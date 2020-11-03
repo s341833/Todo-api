@@ -93,8 +93,8 @@ function loginUser() {
         $("#navIn").html(navbarLogedInn)
         getTodos();
     })
-    .fail(function (data, status) {
-        alert("Feil brukernavn eller passord");
+    .fail(function (data, status, xhr) {
+        alert("Feil brukernavn eller passord \n" + data.message + " " + status.message + " " + xhr);
     });
 }
 
@@ -254,6 +254,7 @@ function deleteTodo(id) {
 function logOut() {
     activUser = null;
     sessionStorage.clear();
+    localStorage.clear();
     showLogin();
     $("#navIn").html(navbarNot);
 }
