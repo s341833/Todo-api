@@ -61,6 +61,7 @@ public class TodoController {
     ResponseEntity<String> deleteTodo(@RequestParam Map<String, Object> todoMap) {
         int id = Integer.parseInt((String) todoMap.get("id"));
 
+
         String ut = todoService.deleteTodo(id);
         return new ResponseEntity<>(ut, HttpStatus.OK);
     }

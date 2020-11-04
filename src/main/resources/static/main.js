@@ -36,10 +36,6 @@ let navbarNot = "<div type='button' class='navbar-brand' onclick='showLogin()'>L
 let todoList = [];
 let todoListNye = [];
 
-function test() {
-
-}
-
 function showLogin() {
     $("#info").html(login);
 }
@@ -86,16 +82,15 @@ function loginUser() {
 
         if ($("#innlogget").is(":checked") === true) {
             localStorage.setItem("username", activUser);
-        } else {
-            console.log($("innlogget").val())
         }
 
         $("#navIn").html(navbarLogedInn)
         getTodos();
     })
     .fail(function (data, status, xhr) {
-        alert("Feil brukernavn eller passord \n" + data.message + " " + status.message + " " + xhr);
+        alert("Feil brukernavn eller passord");
     });
+
 }
 
 function registrerUser() {
@@ -109,8 +104,6 @@ function registrerUser() {
 
     $.post("/api/user/registrer", user, function (data, status) {
         activUser = data
-        console.log(activUser);
-        //$("#login").html("");
         getTodos();
         sessionStorage.setItem("username", activUser);
         $("#navIn").html(navbarLogedInn);
@@ -133,9 +126,7 @@ function getTodos() {
                 todoListNye.push(todoList[i]);
             }
         }
-        console.log(todos)
         showTodos()
-        //formatTodos(todoList)
     })
 }
 
@@ -149,7 +140,8 @@ function makeTodo() {
     //alert("username " + activUser + "\n" + "todo "+ $("#todoTodo").val() + "\n" + "date " + $("#todoDate").val())
 
     $.post("api/todo/postTodo", todo, function (data) {
-        alert(data)
+        alert(data);
+        getTodos();
     })
     .fail (function(data, status) {
         alert(data +" " + status)
@@ -195,14 +187,14 @@ function showTodos() {
 
 function formatTodos(todos) {
     let ut =
-        "<table class=\"table table-borderless table-dark\"> </div><tr>" +
+        "<table class=\"table table-striped table-dark\"> </div><tr>" +
         "<th scope=\"col\">Todo</th>" +
         "<th scope=\"col\">Done</th>" +
         "<th scope=\"col\">Date</th>" +
         "<th scope='col'>Endre</th>" +
         "<th scope='col'>Delete</th></tr>"
     for (let i = 0; i <todos.length; i++) {
-        ut += "<tr><td>"+todos[i].todo+"</td><td><div class='custom-control custom-switch'>"
+        ut += "<tr><th scope='col>' <td>"+todos[i].todo+"</td><td><div class='custom-control custom-switch'>"
         let id = todos[i].id;
         let done = !todos[i].done;
 
@@ -211,9 +203,9 @@ function formatTodos(todos) {
         } else {
             ut += "<input onchange='updateTodoDone("+ id + ", " + done + ")' type=\"checkbox\">"
         }
-        ut += "</div></td><td>"+todos[i].frist+"</td><td><button onclick='showEndreTodo(" + i + ")' class='btn btn-outline-success'>Endre</button>" +
+        ut += "</div></td><td>"+new Date(todos[i].frist).toDateString()+"</td><td><button onclick='showEndreTodo(" + i + ")' class='btn btn-outline-success'>Endre</button>" +
             "</td><td><button onclick='deleteTodo(" + id + ")' class='btn btn-outline-danger'>Slett</button></td>" +
-            "</tr></div>"
+            "</th></tr></div>"
     }
     $("#todos").html(ut)
 }
@@ -260,11 +252,9 @@ function logOut() {
 }
 
 function onLoad() {
-    showLogin();
     activUser = sessionStorage.getItem("username");
     console.log(activUser);
     if (activUser !== null) {
-        console.log("in")
         $("#navIn").html(navbarLogedInn);
         getTodos();
     } else {
@@ -272,6 +262,9 @@ function onLoad() {
         if (activUser !== null) {
             $("#navIn").html(navbarLogedInn);
             getTodos();
+        } else {
+            $("#navIn").html(navbarNot);
+            showLogin();
         }
     }
 

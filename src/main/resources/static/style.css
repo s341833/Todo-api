@@ -2,3 +2,26 @@
     margin: 50px auto auto;
 }
 
+body {
+    background-color: #212529!important;
+}
+
+
+.card {
+    border-color: black!important;
+
+    color: white!important;
+}
+
+.card .card-header {
+    background-color: black!important;
+}
+
+.card .card-body {
+    background-color: grey!important;
+}
+
+input {
+    background-color: darkgrey!important;
+}
+

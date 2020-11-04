@@ -1,7 +1,6 @@
 package com.nicolai.todo.api;
 
 import com.nicolai.todo.domain.User;
-import com.nicolai.todo.dto.UserDto;
 import com.nicolai.todo.exceptions.UserException;
 import com.nicolai.todo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,7 @@ public class UserController {
     }
 }
 
+/*
 @ControllerAdvice
 class UserResponseEntetyExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UserException.class})
@@ -46,3 +46,4 @@ class UserResponseEntetyExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }
+ */
